@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <script src="jQuery/dist/jquery.min.js"></script>
+  <script src="js/request.js"></script>
+</head>
+
+<body>
+  <div class="mian">
+    <div class="left">
+      <div class="group-item" id="todo">
+        <div class="icon todo-icon"></div>
+        <div class="title">To-do</div>
+        <div class="count">{{allCount}}</div>
+      </div>
+      <div class="group-item" id="complete">
+        <div class="icon complete-icon"></div>
+        <div class="title">Complete</div>
+        <div class="count">{{comCount}}</div>
+      </div>
+      <div class="group-item" id="recycle">
+        <div class="icon recycle-icon"></div>
+        <div class="title">Recycle</div>
+        <div class="count">{{reyCount}}</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="content">
+        <div class="complete-title">已完成</div>
+        <div class="table-box">
+          <table class="table table-hover">
+            <thead>
+              <!-- <th style="width: 300px">id</th> -->
+              <th>序号</th>
+              <th>名称</th>
+              <th style="width: 110px">状态</th>
+              <th>操作</th>
+            </thead>
+            <tbody id="tbody">
+              {{each data}}
+              <tr>
+                <!-- <td>{{$value._id}}</td> -->
+                <td>{{$index}}</td>
+                <td>{{$value.name}}</td>
+                <td>
+                  <select class="status-select form-control form-control-sm">
+                    <option selected label={{if !$value.status}} 未完成 {{else}} 已完成 {{/if}} value={{if !$value.status}}
+                      0_{{$value._id}} {{else}} 1_{{$value._id}} {{/if}}></option>
+                    <option label={{if !$value.status}} 已完成 {{else}} 未完成 {{/if}} value={{if !$value.status}}
+                      1_{{$value._id}} {{else}} 0_{{$value._id}} {{/if}}></option>
+                  </select>
+                </td>
+                <td>
+                  <button value={{$value._id}} class="delete-todo-btn btn btn-danger btn-sm">删除</button>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  $(document).ready(() => {
+
+    $('#todo').click(function () {
+      window.location.href = '/getAll';
+    });
+
+    $('#recycle').click(function () {
+      window.location.href = '/getRecycle';
+    });
+
+    // 获取已完成待办
+    $('#complete').click(function () {
+      $(this).addClass('select');
+      const url = '/getComplete';
+      baseRequset(url)
+        .then((res) => {
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+
+    // 状态变更
+    $('#status-select').bind('change', function () {
+      const data = $(this).val().toString().replace(/\"/g, "").split('_');
+      const url = '/updateTodo';
+      const method = 'patch';
+      $.ajax({
+        url,
+        method,
+        data: { status: data[0], todoId: data[1] },
+        success: function () {
+          window.location.reload();
+        },
+        error: function (error) {
+          console.log(error);
+        },
+      });
+    });
+
+    // 删除
+    $('.delete-todo-btn').click(function () {
+      const todoId = $(this).val().replace(/\"/g, "");
+      const url = '/deleteTodo?force=false';
+      const method = 'delete';
+      $.ajax({
+        url,
+        method,
+        data: { todoId },
+        dataType: "json",
+        success: function () {
+          window.location.reload();
+        },
+        error: function (error) {
+          console.log(error);
+        }
+      })
+    });
+
+    $('#complete').click();
+  });
+</script>
+
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <script src="jQuery/dist/jquery.min.js"></script>
+  <script src="js/request.js"></script>
+</head>
+
+<body>
+  <div class="mian">
+    <div class="left">
+      <div class="group-item" id="todo">
+        <div class="icon todo-icon"></div>
+        <div class="title">To-do</div>
+        <div class="count">{{allCount}}</div>
+      </div>
+      <div class="group-item" id="complete">
+        <div class="icon complete-icon"></div>
+        <div class="title">Complete</div>
+        <div class="count">{{comCount}}</div>
+      </div>
+      <div class="group-item" id="recycle">
+        <div class="icon recycle-icon"></div>
+        <div class="title">Recycle</div>
+        <div class="count">{{reyCount}}</div>
+      </div>
+    </div>
+    <div class="right">
+      {{if !allCount}}
+      <div class="empty-content">
+        <div class="create-btn"></div>
+      </div>
+      {{else}}
+      <div class="content">
+        <div class="create-todo">
+          <button id="create-todo-btn" class="btn btn-primary btn-lg">新建</button>
+        </div>
+        <div class="table-box">
+          <table class="table table-hover">
+            <thead>
+              <!-- <th style="width: 300px">id</th> -->
+              <th>序号</th>
+              <th>名称</th>
+              <th style="width: 110px">状态</th>
+              <th>操作</th>
+            </thead>
+            <tbody id="tbody">
+              {{each data}}
+              <tr>
+                <!-- <td>{{$value._id}}</td> -->
+                <td>{{$index}}</td>
+                <td>{{$value.name}}</td>
+                <td>
+                  <select class="status-select form-control form-control-sm">
+                    <option selected label={{if !$value.status}} 未完成 {{else}} 已完成 {{/if}} value={{if !$value.status}} 0_{{$value._id}} {{else}} 1_{{$value._id}} {{/if}}></option>
+                    <option label={{if !$value.status}} 已完成 {{else}} 未完成 {{/if}} value={{if !$value.status}} 1_{{$value._id}} {{else}} 0_{{$value._id}} {{/if}}></option>
+                  </select>
+                </td>
+                <td>
+                  <button value={{$value._id}} class="delete-todo-btn btn btn-danger btn-sm">删除</button>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+    <div class="dialog">
+      <div class="dialog-bg"></div>
+      <div class="dialog-pop">
+        <div class="title">创建待办</div>
+        <div class="content">
+          <input class="form-control" name="todoname" type="text" placeholder="请输入待办事项名称">
+        </div>
+        <div class="button-group">
+          <div class="confirm-btn">
+            <button type="button" id="cfr" class="btn btn-outline-primary">确定</button>
+          </div>
+          <div class="cancel-btn">
+            <button type="button" id="cal" class="btn btn-outline-secondary">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  $(document).ready(() => {
+    $('.create-btn, #create-todo-btn').click(function () {
+      $('.dialog').show();
+      $('input').focus();
+      !!$('input').val().trim().length ? $('#cfr').attr('disabled', false) : $('#cfr').attr('disabled', true);
+    });
+
+    // 输入框输入事件
+    $('input').bind('input propertychange', function () {
+      !!$('input').val().trim().length ? $('#cfr').attr('disabled', false) : $('#cfr').attr('disabled', true);
+    });
+
+    /* 请求数据相关 begin*/
+    // 获取所有待办
+    $('#todo').click(function () {
+      $(this).addClass('select');
+      const url = '/getAll?timestamp=' + (new Date()).getTime().toString();
+      $.ajax({
+        url,
+        success: function (res) {
+        },
+        error: function (error) {
+          console.log(error);
+        },
+      });
+    });
+
+    $('#complete').click(function () {
+      window.location.href = '/getComplete';
+    });
+
+    $('#recycle').click(function () {
+      window.location.href = '/getRecycle';
+    });
+    /* 请求数据相关 end*/
+
+    /* 弹框响应操作 begin */
+    $('#cfr').click(function () {
+      const url = '/createTodo';
+      const method = 'post';
+      const data = {
+        todoname: $('input').val(),
+      };
+      $.ajax({
+        url,
+        method,
+        data,
+        success: function (res) {
+          window.location.reload();
+        },
+        error: function (error) {
+          console.log(error);
+        }
+      });
+    });
+
+    $('#cal').click(function () {
+      $('.dialog').hide();
+    });
+    /* 弹框响应操作 end */
+
+    // 删除
+    $('.delete-todo-btn').click(function () {
+      const todoId = $(this).val().replace(/\"/g, "");
+      const url = '/deleteTodo?force=false';
+      const method = 'delete';
+      $.ajax({
+        url,
+        method,
+        data: { todoId },
+        dataType: "json",
+        success: function () {
+          window.location.reload();
+        },
+        error: function (error) {
+          console.log(error);
+        }
+      })
+    });
+
+    // 状态变更
+    $('.status-select').bind('change', function () {
+      console.log(1);
+      const data = $(this).val().toString().replace(/\"/g, "").split('_');
+      const url = '/updateTodo';
+      const method = 'patch';
+      $.ajax({
+        url,
+        method,
+        data: {status: data[0], todoId: data[1]},
+        success: function () {
+          window.location.reload();
+        },
+        error: function (error) {
+          console.log(error);
+        },
+      });
+    });
+
+
+    // 快捷键相关
+    $(document).bind('keydown', function (e) {
+      const dialogIsShow = $('.dialog').css('display') === 'block';
+      if (dialogIsShow && e.key === 'Escape') {
+        $('.dialog').hide();
+      }
+      if (dialogIsShow && !!$('input').val().trim().length && e.key === 'Enter') {
+        console.log(1);
+        $('#cfr').click();
+      }
+    });
+
+    $('#todo').click();
+  });
+</script>
+
+</html>

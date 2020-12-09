@@ -1,0 +1,244 @@
+.mian {
+  display: flex;
+  width: 1280px;
+  height: auto;
+  margin: 100px auto;
+  overflow: hidden;
+  border: 1px solid #dcddde;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.16);
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+}
+
+.left {
+  width: 240px;
+  padding: 20px 10px;
+  border-right: 1px dashed #999999;
+  background-image: url('../image/left-bg.png');
+}
+
+.group-item {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  position: relative;
+  background: #ffffff;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 18px;
+  -webkit-border-radius: 18px;
+  -moz-border-radius: 18px;
+  -ms-border-radius: 18px;
+  -o-border-radius: 18px;
+}
+
+.select,
+.group-item:hover {
+  background: #eceeec;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin: 0 12px;
+  background-repeat: no-repeat;
+}
+
+.todo-icon {
+  background-image: url('../image/todo.svg');
+}
+
+.complete-icon {
+  background-image: url('../image/complete.svg');
+}
+
+.recycle-icon {
+  background-image: url('../image/recycle.svg');
+}
+
+.title {
+  font-weight: 500;
+}
+
+.count {
+  position: absolute;
+  right: 12px;
+}
+
+.right {
+  position: relative;
+  width: 984px;
+  height: 680px;
+  margin: 0 50px;
+}
+
+.right .empty-content {
+  width: 100%;
+  height: 100%;
+  background-image: url('../image/empty-bg.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.right .content {
+  width: 100%;
+  height: 100%;
+  padding-top: 20px;
+}
+
+.table-box {
+  height: calc(100% - 100px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+/*滚动条整体样式 begin*/
+.table-box::-webkit-scrollbar {
+  /*高宽分别对应横竖滚动条的尺寸*/
+  width: 6px;
+  height: 1px;
+}
+
+.table-box::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: rgba(46, 47, 48, 0.4);
+}
+
+.table-box::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background: #f0f0f0;
+}
+/*滚动条整体样式 end*/
+
+.table {
+  border: 1px solid #dcddde;
+}
+
+.complete-title,
+.recycle-title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 44px;
+  margin-bottom: 36px;
+}
+
+.complete-title {
+  color: #007bff;
+}
+
+.recycle-title {
+  color: #dc3545;
+}
+
+thead,
+th,
+tr,
+td {
+  border: none !important;
+}
+
+thead tr,
+tbody tr {
+  border-bottom: 1px solid #dcddde !important;
+}
+
+thead th,
+tbody td {
+  border-right: 1px solid #dcddde !important;
+}
+
+thead th:last-child,
+tbody td:last-child {
+  border: none !important;
+}
+
+tbody tr:last-child {
+  border-bottom: none !important;
+}
+
+.btn-group-lg > .btn,
+.btn-lg {
+  padding: 6px 22px;
+}
+
+.empty-content .create-btn {
+  position: absolute;
+  width: 170px;
+  height: 70px;
+  top: 98px;
+  left: 330px;
+  cursor: pointer;
+}
+
+.content .create-todo {
+  margin-bottom: 36px;
+}
+
+.dialog {
+  position: fixed;
+  z-index: 3000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+}
+
+.dialog-bg {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3000;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.dialog-pop {
+  position: absolute;
+  z-index: 3001;
+  width: 510px;
+  background-color: #fff;
+  box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.15);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  outline: 1px solid transparent;
+  padding: 20px 30px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  max-height: 90vh;
+  animation: dialog-fade-in 0.3s;
+  -webkit-animation: dialog-fade-in 0.3s;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+}
+
+.dialog-pop .title {
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.dialog-pop .content {
+  padding: 20px 0;
+}
+
+.dialog-pop .button-group {
+  float: right;
+}
+
+.confirm-btn,
+.cancel-btn {
+  display: inline-block;
+  margin-left: 10px;
+}
